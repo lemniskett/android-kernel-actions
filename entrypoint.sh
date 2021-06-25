@@ -25,11 +25,11 @@ zipper_path="zipper"
 msg "Updating container..."
 apt update && apt upgrade -y
 msg "Installing essential packages..."
-apt install git make bc bison curl zip kmod cpio flex libelf-dev libssl-dev libtfm-dev
+apt install -y git make bc bison curl zip kmod cpio flex libelf-dev libssl-dev libtfm-dev
 msg "Installing toolchain..."
 if [[ $arch = "arm64" ]]; then
     if [[ $compiler = gcc-* ]]; then
-        if ! apt install "$compiler" "$compiler"-aarch64-linux-gnu "$compiler"-arm-linux-gnueabi; then
+        if ! apt install -y "$compiler" "$compiler"-aarch64-linux-gnu "$compiler"-arm-linux-gnueabi; then
             err "Compiler package not found, refer to the README for details"
             exit 1
         fi
@@ -43,7 +43,7 @@ if [[ $arch = "arm64" ]]; then
         make_opts="O=out"
     elif [[ $compiler = clang-* ]]; then
         compiler_version="${compiler/*-}"
-        if ! apt install "$compiler" lld-"$compiler_version" gcc gcc-aarch64-linux-gnu gcc-arm-linux-gnueabi; then
+        if ! apt install -y "$compiler" lld-"$compiler_version" gcc gcc-aarch64-linux-gnu gcc-arm-linux-gnueabi; then
             err "Compiler package not found, refer to the README for details"
             exit 1
         fi
