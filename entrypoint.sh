@@ -82,7 +82,7 @@ if ! make "$make_opts" -j"$(nproc --all)"; then
 fi
 msg "Packaging the kernel..."
 zip_filename="${repo_name}-${tag}.zip"
-git clone "$zipper" $zipper_path || exit 127
+git clone https://"$zipper".git $zipper_path || exit 127
 cp out/arch/"$arch"/boot/"$image" "$zipper_path"/"$image"
 cd $zipper_path || exit 127
 zip -r9 "$zip_filename" . -x '*.git' || exit 127
