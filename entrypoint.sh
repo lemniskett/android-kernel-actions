@@ -89,6 +89,7 @@ zip_filename="${repo_name}-${tag}.zip"
 git clone --depth 1 https://"$zipper".git $zipper_path || exit 127
 cp out/arch/"$arch"/boot/"$image" "$zipper_path"/"$image"
 cd $zipper_path || exit 127
-zip -r9 "$zip_filename" . -x '.git' || exit 127
+rm -rf .git
+zip -r9 "$zip_filename" . || exit 127
 outfile "$zipper_path"/"$zip_filename"
 cd "$workdir" || exit 127
