@@ -11,9 +11,6 @@ inputs:
   compiler:
     description: Compiler to use
     required: true
-  zipper:
-    description: Zipper repository
-    default: nozipper
   defconfig:
     description: Defconfig to use
     required: true
@@ -29,6 +26,5 @@ runs:
   args:
     - ${{ inputs.arch }}
     - ${{ inputs.compiler }}
-    - ${{ inputs.zipper }}
     - ${{ inputs.defconfig }}
     - ${{ inputs.image }}

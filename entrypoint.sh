@@ -1,15 +1,19 @@
 #!/usr/bin/env bash
 
 msg(){
+    echo
     echo "==>"
     echo "==> $*"
     echo "==>"
+    echo
 }
 
 err(){
+    echo
     echo "==>"
     echo "==> $*" 1>&2
     echo "==>"
+    echo
 }
 
 outfile(){
@@ -19,12 +23,11 @@ outfile(){
 workdir="$GITHUB_WORKSPACE"
 arch="$1"
 compiler="$2"
-zipper="$3"
-defconfig="$4"
-image="$5"
+defconfig="$3"
+image="$4"
 tag="${GITHUB_REF/refs\/tags\//}"
 repo_name="${GITHUB_REPOSITORY/*\/}"
-zipper_path="zipper"
+zipper_path="${ZIPPER_PATH:-zipper}"
 
 msg "Updating container..."
 apt update && apt upgrade -y
@@ -84,22 +87,16 @@ if ! make $make_opts -j"$(nproc --all)"; then
 fi
 msg "Packaging the kernel..."
 zip_filename="${NAME:-$repo_name}-${tag}-${date}.zip"
-if [[ $zipper = "nozipper" ]]; then
-    msg "No zip template provided, releasing the kernel image instead"
-    outfile out/arch/"$arch"/boot/"$image"
-    exit 0
-else
-    if ! git clone --depth 1 https://"$zipper" $zipper_path; then
-        msg "Error cloning zip template, releasing the kernel image instead"
-        outfile out/arch/"$arch"/boot/"$image"
-        cd "$workdir" || exit 127
-        exit 0
-    fi    
+if [[ -e "$zipper_path" ]]; then
     cp out/arch/"$arch"/boot/"$image" "$zipper_path"/"$image"
-    cd $zipper_path || exit 127
+    cd "$zipper_path" || exit 127
     rm -rf .git
     zip -r9 "$zip_filename" . || exit 127
     outfile "$zipper_path"/"$zip_filename"
     cd "$workdir" || exit 127
+    exit 0
+else
+    msg "No zip template provided, releasing the kernel image instead"
+    outfile out/arch/"$arch"/boot/"$image"
     exit 0
 fi
