@@ -20,10 +20,15 @@ You can use other actions to grab the flashable zip file and releases it.
 
 ### ARM64
 
+#### Ubuntu's GCC
+
 - `gcc-7`
 - `gcc-8`
 - `gcc-9`
 - `gcc-10`
+
+#### Ubuntu's Clang (using `binutils`)
+
 - `clang-6.0`
 - `clang-7`
 - `clang-8`
