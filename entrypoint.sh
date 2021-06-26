@@ -76,13 +76,14 @@ if ! make $make_opts "$defconfig"; then
     err "Failed generating .config, make sure it is actually available in arch/${arch}/configs/ and is a valid defconfig file"
     exit 2
 fi
+date="$(date +%d%m%Y-%I%M)"
 msg "Begin building kernel..."
 if ! make $make_opts -j"$(nproc --all)"; then
     err "Failed building kernel, is the toolchain compatible with the kernel?"
     exit 3
 fi
 msg "Packaging the kernel..."
-zip_filename="${repo_name}-${tag}.zip"
+zip_filename="${NAME:-$repo_name}-${tag}-${date}.zip"
 git clone --depth 1 https://"$zipper".git $zipper_path || exit 127
 cp out/arch/"$arch"/boot/"$image" "$zipper_path"/"$image"
 cd $zipper_path || exit 127
