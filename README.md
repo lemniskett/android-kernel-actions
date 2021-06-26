@@ -4,17 +4,38 @@ Builds Android kernel from the kernel repository.
 
 ## Action inputs
 
+### Inputs
+
 | Input | Description |
 | --- | --- |
 | `arch` | Specify what Architecture target to use, currently only supports `arm64` |
 | `compiler` | Specify which compiler to use, currently only supports `gcc-*` from Ubuntu repository |
-| `zipper` | Specify the git repository of the flashable zip template, using [osm0sis's AnyKernel3](https://github.com/osm0sis/AnyKernel3) as base is recommended |
 | `defconfig` | Specify what defconfig command to generate `.config` file |
 | `image` | Specify what is the final build file, usually it's `Image.gz-dtb` or '`Image-dtb`' |
 
+### Environment Variables
+
+| Variable | Description |
+| --- | --- |
+| `NAME` | Specify the name of the release file, defaults to the name of the repository |
+| `ZIPPER_PATH` | Specify the path of the zip template, defaults to `zipper` |
+
 ## Getting the build
 
-You can use other actions to grab the flashable zip file and releases it.
+This action will outputs a variable named `outfile`, so you can get the path of the zip file with: 
+```
+${{ steps.<step id>.outputs.outfile }}
+```
+
+Then you can use other action to actually release the file, for example, with [`ncipollo/release-action@v1`](https://github.com/ncipollo/release-action):
+
+```yml
+- name: Release build
+  uses: ncipollo/release-action@v1
+  with:
+    artifacts: ${{ steps.<step id>.outputs.outfile }}
+    token: ${{ secrets.GITHUB_TOKEN }}
+```
 
 ## Available toolchains
 
@@ -49,22 +70,29 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    
     steps:
-    - name: Checkout code
+    - name: Checkout kernel source
       uses: actions/checkout@v2
-    
+
+    - name: Checkout zipper
+      uses: actions/checkout@v2
+      with:
+        repository: lemniskett/AnyKernel3
+        path: zipper
+
     - name: Android kernel build
       uses: lemniskett/android-kernel-actions@master
       id: build
+      env:
+        NAME: Dark-Ages-Último
       with:
-        arch: 'arm64'
-        compiler: 'gcc-9'
-        zipper: 'github.com/lemniskett/AnyKernel3'
-        defconfig: 'vince_defconfig'
-        image: 'Image.gz-dtb'
+        arch: arm64
+        compiler: clang-10
+        defconfig: vince_defconfig
+        image: Image.gz-dtb
 
-    - uses: ncipollo/release-action@v1
+    - name: Release build
+      uses: ncipollo/release-action@v1
       with:
         artifacts: ${{ steps.build.outputs.outfile }}
         token: ${{ secrets.GITHUB_TOKEN }}
