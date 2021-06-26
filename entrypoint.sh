@@ -89,7 +89,7 @@ if [[ $zipper = "nozipper" ]]; then
     outfile out/arch/"$arch"/boot/"$image"
     exit 0
 else
-    if ! git clone --depth 1 https://"$zipper".git $zipper_path; then
+    if ! git clone --depth 1 https://"$zipper" $zipper_path; then
         msg "Error cloning zip template, releasing the kernel image instead"
         outfile out/arch/"$arch"/boot/"$image"
         cd "$workdir" || exit 127
