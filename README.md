@@ -9,9 +9,9 @@ Builds Android kernel from the kernel repository.
 | Input | Description |
 | --- | --- |
 | `arch` | Specify what Architecture target to use, currently only supports `arm64` |
-| `compiler` | Specify which compiler to use, currently only supports `gcc-*` from Ubuntu repository |
-| `defconfig` | Specify what defconfig command to generate `.config` file |
-| `image` | Specify what is the final build file, usually it's `Image.gz-dtb` or '`Image-dtb`' |
+| `compiler` | Specify which toochain to use |
+| `defconfig` | Specify what defconfig command used to generate `.config` file |
+| `image` | Specify what is the final build file, usually it's `Image.gz-dtb` or `Image-dtb` |
 
 ### Environment Variables
 
@@ -43,19 +43,19 @@ Then you can use other action to actually release the file, for example, with [`
 
 #### Ubuntu's GCC
 
-- `gcc-7`
-- `gcc-8`
-- `gcc-9`
-- `gcc-10`
+- `gcc/7`
+- `gcc/8`
+- `gcc/9`
+- `gcc/10`
 
 #### Ubuntu's Clang (using `binutils`)
 
-- `clang-6.0`
-- `clang-7`
-- `clang-8`
-- `clang-9`
-- `clang-10`
-- `clang-11`
+- `clang/6.0`
+- `clang/7`
+- `clang/8`
+- `clang/9`
+- `clang/10`
+- `clang/11`
 
 ## Example usage
 
@@ -84,7 +84,7 @@ jobs:
       uses: lemniskett/android-kernel-actions@master
       id: build
       env:
-        NAME: Dark-Ages-Último
+        NAME: Dark-Ages-Último-Tweaks
       with:
         arch: arm64
         compiler: clang-10

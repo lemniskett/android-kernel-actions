@@ -33,37 +33,38 @@ msg "Updating container..."
 apt update && apt upgrade -y
 msg "Installing essential packages..."
 apt install -y --no-install-recommends git make bc bison openssl \
-    curl zip kmod cpio flex libelf-dev libssl-dev libtfm-dev
+    curl zip kmod cpio flex libelf-dev libssl-dev libtfm-dev wget
 msg "Installing toolchain..."
 if [[ $arch = "arm64" ]]; then
-    if [[ $compiler = gcc-* ]]; then
-        if ! apt install -y --no-install-recommends "$compiler" "$compiler"-aarch64-linux-gnu "$compiler"-arm-linux-gnueabi; then
+    if [[ $compiler = gcc/* ]]; then
+        ver="${compiler/gcc\/}"
+        if ! apt install -y --no-install-recommends gcc-"$ver" gcc-"$ver"-aarch64-linux-gnu gcc-"$ver"-arm-linux-gnueabi; then
             err "Compiler package not found, refer to the README for details"
             exit 1
         fi
-        ln -sf /usr/bin/"$compiler" /usr/bin/gcc
-        ln -sf /usr/bin/aarch64-linux-gnu-"$compiler" /usr/bin/aarch64-linux-gnu-gcc
-        ln -sf /usr/bin/arm-linux-gnueabi-"$compiler" /usr/bin/arm-linux-gnueabi-gcc
+        ln -sf /usr/bin/gcc-"$ver" /usr/bin/gcc
+        ln -sf /usr/bin/aarch64-linux-gnu-gcc-"$ver" /usr/bin/aarch64-linux-gnu-gcc
+        ln -sf /usr/bin/arm-linux-gnueabi-gcc-"$ver" /usr/bin/arm-linux-gnueabi-gcc
         export ARCH="$arch"
         export SUBARCH="$arch"
         export CROSS_COMPILE="aarch64-linux-gnu-"
         export CROSS_COMPILE_ARM32="arm-linux-gnueabi-"
-        make_opts="O=out ARCH=$arch SUBARCH=$arch"
-    elif [[ $compiler = clang-* ]]; then
-        compiler_version="${compiler/*-}"
-        if ! apt install -y --no-install-recommends "$compiler" binutils-aarch64-linux-gnu binutils-arm-linux-gnueabi llvm-"$compiler_version"; then
+        make_opts="O=out ARCH=${arch} SUBARCH=${arch}"
+    elif [[ $compiler = clang/* ]]; then
+        ver="${compiler/clang\/}"
+        if ! apt install -y --no-install-recommends clang-"$ver" llvm-"$ver" binutils binutils-aarch64-linux-gnu binutils-arm-linux-gnueabi; then
             err "Compiler package not found, refer to the README for details"
             exit 1
         fi
-        ln -sf /usr/bin/"$compiler" /usr/bin/clang
+        ln -sf /usr/bin/clang-"$ver" /usr/bin/clang
         export ARCH="$arch"
         export SUBARCH="$arch"
         export CLANG_TRIPLE="aarch64-linux-gnu-"
         export CROSS_COMPILE="aarch64-linux-gnu-"
         export CROSS_COMPILE_ARM32="arm-linux-gnueabi-"
-        make_opts="O=out ARCH=$arch SUBARCH=$arch CC=clang HOSTCC=clang HOSTCXX=clang++"
-    else 
-        err "Currently this action only supports gcc-* and clang-*, refer to the README for more detail"
+        make_opts="O=out ARCH=${arch} SUBARCH=${arch} CC=clang HOSTCC=clang HOSTCXX=clang++"
+    else
+        err "Unsupported toolchain string. refer to the README for more detail"
         exit 100
     fi
 else
@@ -72,8 +73,6 @@ else
 fi
 
 echo "make options: " $make_opts
-msg "Cleaning from the previous run..."
-make $make_opts mrproper
 msg "Generating defconfig from \`make $defconfig\`..."
 if ! make $make_opts "$defconfig"; then
     err "Failed generating .config, make sure it is actually available in arch/${arch}/configs/ and is a valid defconfig file"
