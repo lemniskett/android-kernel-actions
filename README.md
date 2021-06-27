@@ -28,7 +28,6 @@ Builds Android kernel from the kernel repository.
 | `elapsed_time` | Time elapsed from building the kernel in seconds, excluding zipping and downloading toolchains |
 | `outfile` | Path to the final build file |
 | `hash` | Kernel commit hash |
-| `name` | Name of the build, specified from repo name or `NAME` environment variable |
 
 ## Getting the build
 

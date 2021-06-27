@@ -30,14 +30,13 @@ repo_name="${GITHUB_REPOSITORY/*\/}"
 zipper_path="${ZIPPER_PATH:-zipper}"
 kernel_path="${KERNEL_PATH:-.}"
 name="${NAME:-$repo_name}"
-set_output hash "$(cd $kernel_path; git rev-parse HEAD)"
-set_output name "$name"
 
 msg "Updating container..."
 apt update && apt upgrade -y
 msg "Installing essential packages..."
 apt install -y --no-install-recommends git make bc bison openssl \
     curl zip kmod cpio flex libelf-dev libssl-dev libtfm-dev wget
+set_output hash "$(cd $kernel_path; git rev-parse HEAD)"
 msg "Installing toolchain..."
 if [[ $arch = "arm64" ]]; then
     arch_opts="ARCH=${arch} SUBARCH=${arch}"
