@@ -16,8 +16,8 @@ err(){
     echo
 }
 
-outfile(){
-    echo "::set-output name=outfile::$*"
+set_output(){
+    echo "::set-output name=$1::$2"
 }
 
 workdir="$GITHUB_WORKSPACE"
@@ -29,6 +29,9 @@ tag="${GITHUB_REF/refs\/*\//}"
 repo_name="${GITHUB_REPOSITORY/*\/}"
 zipper_path="${ZIPPER_PATH:-zipper}"
 kernel_path="${KERNEL_PATH:-.}"
+name="${NAME:-$repo_name}"
+set_output hash "$(git rev-parse HEAD)"
+set_output name "$name"
 
 msg "Updating container..."
 apt update && apt upgrade -y
@@ -98,6 +101,8 @@ else
     exit 100
 fi
 
+start_time="$(date +%s)"
+date="$(date +%d%m%Y-%I%M)"
 cd "$workdir"/"$kernel_path" || exit 127
 echo "make options:" $make_opts $host_make_opts
 msg "Generating defconfig from \`make $defconfig\`..."
@@ -105,24 +110,24 @@ if ! make O=out $arch_opts $make_opts $host_make_opts "$defconfig"; then
     err "Failed generating .config, make sure it is actually available in arch/${arch}/configs/ and is a valid defconfig file"
     exit 2
 fi
-date="$(date +%d%m%Y-%I%M)"
 msg "Begin building kernel..."
 if ! make O=out $arch_opts $make_opts $host_make_opts -j"$(nproc --all)"; then
     err "Failed building kernel, is the toolchain compatible with the kernel?"
     exit 3
 fi
+set_output elapsed_time "$(echo $(date +%s)-$start_time | bc)"
 msg "Packaging the kernel..."
-zip_filename="${NAME:-$repo_name}-${tag}-${date}.zip"
+zip_filename="${name}-${tag}-${date}.zip"
 if [[ -e "$workdir"/"$zipper_path" ]]; then
     cp out/arch/"$arch"/boot/"$image" "$workdir"/"$zipper_path"/"$image"
     cd "$workdir"/"$zipper_path" || exit 127
     rm -rf .git
     zip -r9 "$zip_filename" . || exit 127
-    outfile "$workdir"/"$zipper_path"/"$zip_filename"
+    set_output outfile "$workdir"/"$zipper_path"/"$zip_filename"
     cd "$workdir" || exit 127
     exit 0
 else
     msg "No zip template provided, releasing the kernel image instead"
-    outfile out/arch/"$arch"/boot/"$image"
+    set_output outfile out/arch/"$arch"/boot/"$image"
     exit 0
 fi

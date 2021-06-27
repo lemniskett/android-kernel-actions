@@ -2,7 +2,7 @@
 
 Builds Android kernel from the kernel repository.
 
-## Action inputs
+## Action Vars
 
 ### Inputs
 
@@ -21,14 +21,18 @@ Builds Android kernel from the kernel repository.
 | `KERNEL_PATH` | Specify the path of the kernel source, defaults to `.` |
 | `ZIPPER_PATH` | Specify the path of the zip template, defaults to `zipper` |
 
+### Outputs
+
+| Output | Description |
+| --- | --- |
+| `elapsed_time` | Time elapsed from building the kernel in seconds, excluding zipping and downloading toolchains |
+| `outfile` | Path to the final build file |
+| `hash` | Kernel commit hash |
+| `name` | Name of the build, specified from repo name or `NAME` environment variable |
+
 ## Getting the build
 
-This action will outputs a variable named `outfile`, so you can get the path of the final file with: 
-```
-${{ steps.<step id>.outputs.outfile }}
-```
-
-Then you can use other action to actually get the file, for example, with [`ncipollo/release-action`](https://github.com/ncipollo/release-action):
+Use other action to actually get the file, for example, with [`ncipollo/release-action`](https://github.com/ncipollo/release-action):
 
 ```yml
 - name: Release build
