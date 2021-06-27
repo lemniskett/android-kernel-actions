@@ -26,6 +26,7 @@ compiler="$2"
 defconfig="$3"
 image="$4"
 tag="${GITHUB_REF/refs\/tags\//}"
+tag="${GITHUB_REF/refs\/heads\//}"
 repo_name="${GITHUB_REPOSITORY/*\/}"
 zipper_path="${ZIPPER_PATH:-zipper}"
 
