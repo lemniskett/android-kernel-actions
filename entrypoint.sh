@@ -72,12 +72,12 @@ if [[ $arch = "arm64" ]]; then
     elif [[ $compiler = proton-clang/* ]]; then
         ver="${compiler/proton-clang\/}"
         url="https://github.com/kdrag0n/proton-clang/archive/${ver}.tar.gz"
-        if ! wget --no-check-certificate "$url" -O /tmp/proton-clang-"${ver}".tar.gz; then
+        if ! wget --no-check-certificate "$url" -O /tmp/proton-clang-"${ver}".tar.gz &>/dev/null; then
             err "Failed downloading toolchain, refer to the README for details"
             exit 1
         fi
         apt install -y --no-install-recommends libgcc-10-dev || exit 127
-        tar xf /tmp/proton-clang-"${ver}".tar.gz -C /
+        tar xfv /tmp/proton-clang-"${ver}".tar.gz -C /
         cd /proton-clang-"${ver}"* || exit 127
         proton_path="$(pwd)"
         export PATH="$proton_path/bin:${PATH}"
