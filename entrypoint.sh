@@ -30,7 +30,7 @@ repo_name="${GITHUB_REPOSITORY/*\/}"
 zipper_path="${ZIPPER_PATH:-zipper}"
 kernel_path="${KERNEL_PATH:-.}"
 name="${NAME:-$repo_name}"
-set_output hash "$(git rev-parse HEAD)"
+set_output hash "$(cd $kernel_path; git rev-parse HEAD)"
 set_output name "$name"
 
 msg "Updating container..."
