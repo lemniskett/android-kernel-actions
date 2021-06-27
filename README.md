@@ -22,12 +22,12 @@ Builds Android kernel from the kernel repository.
 
 ## Getting the build
 
-This action will outputs a variable named `outfile`, so you can get the path of the zip file with: 
+This action will outputs a variable named `outfile`, so you can get the path of the final file with: 
 ```
 ${{ steps.<step id>.outputs.outfile }}
 ```
 
-Then you can use other action to actually release the file, for example, with [`ncipollo/release-action@v1`](https://github.com/ncipollo/release-action):
+Then you can use other action to actually get the file, for example, with [`ncipollo/release-action`](https://github.com/ncipollo/release-action):
 
 ```yml
 - name: Release build
@@ -35,6 +35,18 @@ Then you can use other action to actually release the file, for example, with [`
   with:
     artifacts: ${{ steps.<step id>.outputs.outfile }}
     token: ${{ secrets.GITHUB_TOKEN }}
+```
+
+Or with [`appleboy/telegram-action`](https://github.com/appleboy/telegram-action):
+
+```yml
+- name: Release build
+  uses: appleboy/telegram-action@master
+  with:
+    to: ${{ secrets.CHANNEL_ID }}
+    token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+    message: ${{ github.repository }} on ${{ github.sha }} is built!
+    document: ${{ steps.build.outputs.outfile }}
 ```
 
 ## Available toolchains
