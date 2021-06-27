@@ -57,6 +57,11 @@ Then you can use other action to actually release the file, for example, with [`
 - `clang/10`
 - `clang/11`
 
+#### [Proton Clang](https://github.com/kdrag0n/proton-clang) (using `binutils` from proton-clang repository)
+
+- `proton-clang/master`
+- `proton-clang/<commit hash>`
+
 ## Example usage
 
 ### With [`ncipollo/release-action@v1`](https://github.com/ncipollo/release-action)
