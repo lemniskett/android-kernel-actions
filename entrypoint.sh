@@ -28,6 +28,7 @@ image="$4"
 tag="${GITHUB_REF/refs\/*\//}"
 repo_name="${GITHUB_REPOSITORY/*\/}"
 zipper_path="${ZIPPER_PATH:-zipper}"
+kernel_path="${KERNEL_PATH:-.}"
 
 msg "Updating container..."
 apt update && apt upgrade -y
@@ -80,7 +81,7 @@ if [[ $arch = "arm64" ]]; then
         cd /proton-clang-"${ver}"* || exit 127
         proton_path="$(pwd)"
         export PATH="$proton_path/bin:${PATH}"
-        cd "$workdir" || exit 127
+        cd "$workdir"/"$kernel_path" || exit 127
         export ARCH="$arch"
         export SUBARCH="$arch"
         export CLANG_TRIPLE="aarch64-linux-gnu-"
@@ -97,6 +98,7 @@ else
     exit 100
 fi
 
+cd "$workdir"/"$kernel_path" || exit 127
 echo "make options:" $make_opts $host_make_opts
 msg "Generating defconfig from \`make $defconfig\`..."
 if ! make O=out $arch_opts $make_opts $host_make_opts "$defconfig"; then
@@ -111,12 +113,12 @@ if ! make O=out $arch_opts $make_opts $host_make_opts -j"$(nproc --all)"; then
 fi
 msg "Packaging the kernel..."
 zip_filename="${NAME:-$repo_name}-${tag}-${date}.zip"
-if [[ -e "$zipper_path" ]]; then
-    cp out/arch/"$arch"/boot/"$image" "$zipper_path"/"$image"
-    cd "$zipper_path" || exit 127
+if [[ -e "$workdir"/"$zipper_path" ]]; then
+    cp out/arch/"$arch"/boot/"$image" "$workdir"/"$zipper_path"/"$image"
+    cd "$workdir"/"$kernel_path" || exit 127
     rm -rf .git
     zip -r9 "$zip_filename" . || exit 127
-    outfile "$zipper_path"/"$zip_filename"
+    outfile "$workdir"/"$zipper_path"/"$zip_filename"
     cd "$workdir" || exit 127
     exit 0
 else

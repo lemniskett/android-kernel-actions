@@ -18,6 +18,7 @@ Builds Android kernel from the kernel repository.
 | Variable | Description |
 | --- | --- |
 | `NAME` | Specify the name of the release file, defaults to the name of the repository |
+| `KERNEL_PATH` | Specify the path of the kernel source, defaults to `.` |
 | `ZIPPER_PATH` | Specify the path of the zip template, defaults to `zipper` |
 
 ## Getting the build
