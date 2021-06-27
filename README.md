@@ -46,7 +46,7 @@ Or with [`appleboy/telegram-action`](https://github.com/appleboy/telegram-action
     to: ${{ secrets.CHANNEL_ID }}
     token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
     message: ${{ github.repository }} on ${{ github.sha }} is built!
-    document: ${{ steps.build.outputs.outfile }}
+    document: ${{ steps.<step id>.outputs.outfile }}
 ```
 
 ## Available toolchains
