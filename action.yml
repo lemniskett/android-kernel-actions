@@ -1,0 +1,30 @@
+name: Android kernel build
+description: Build android kernel with GitHub Action
+author: Syahrial Agni Prasetya <lemniskett@protonmail.com>
+branding:
+  icon: box
+  color: green
+inputs:
+  arch:
+    description: Device architecture
+    required: true
+  compiler:
+    description: Compiler to use
+    required: true
+  defconfig:
+    description: Defconfig to use
+    required: true
+  image:
+    description: Kernel image name
+    required: true
+outputs:
+  outfile:
+    description: Zip file generated from build
+runs:
+  using: docker
+  image: Dockerfile
+  args:
+    - ${{ inputs.arch }}
+    - ${{ inputs.compiler }}
+    - ${{ inputs.defconfig }}
+    - ${{ inputs.image }}
