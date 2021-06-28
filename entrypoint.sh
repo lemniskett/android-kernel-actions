@@ -2,18 +2,14 @@
 
 msg(){
     echo
-    echo "==>"
     echo "==> $*"
-    echo "==>"
     echo
 }
 
 err(){
-    echo
-    echo "==>"
+    echo 1>&2
     echo "==> $*" 1>&2
-    echo "==>"
-    echo
+    echo 1>&2
 }
 
 set_output(){
