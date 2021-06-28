@@ -32,7 +32,7 @@ apt update && apt upgrade -y
 msg "Installing essential packages..."
 apt install -y --no-install-recommends git make bc bison openssl \
     curl zip kmod cpio flex libelf-dev libssl-dev libtfm-dev wget
-set_output hash "$(cd $kernel_path; git rev-parse HEAD)"
+set_output hash "$(cd "$kernel_path" && git rev-parse HEAD || exit 127)"
 msg "Installing toolchain..."
 if [[ $arch = "arm64" ]]; then
     arch_opts="ARCH=${arch} SUBARCH=${arch}"
@@ -99,7 +99,7 @@ fi
 start_time="$(date +%s)"
 date="$(date +%d%m%Y-%I%M)"
 cd "$workdir"/"$kernel_path" || exit 127
-echo "make options:" $make_opts $host_make_opts
+echo "make options:" $arch_opts $make_opts $host_make_opts
 msg "Generating defconfig from \`make $defconfig\`..."
 if ! make O=out $arch_opts $make_opts $host_make_opts "$defconfig"; then
     err "Failed generating .config, make sure it is actually available in arch/${arch}/configs/ and is a valid defconfig file"
@@ -110,7 +110,7 @@ if ! make O=out $arch_opts $make_opts $host_make_opts -j"$(nproc --all)"; then
     err "Failed building kernel, is the toolchain compatible with the kernel?"
     exit 3
 fi
-set_output elapsed_time "$(echo $(date +%s)-$start_time | bc)"
+set_output elapsed_time "$(echo "$(date +%s)"-$start_time | bc)"
 msg "Packaging the kernel..."
 zip_filename="${name}-${tag}-${date}.zip"
 if [[ -e "$workdir"/"$zipper_path" ]]; then
