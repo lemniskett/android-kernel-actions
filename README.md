@@ -1,4 +1,5 @@
 # Android Kernel Actions
+[![Shell check](https://github.com/lemniskett/android-kernel-actions/actions/workflows/check.yml/badge.svg)](https://github.com/lemniskett/android-kernel-actions/actions/workflows/check.yml)
 
 Builds Android kernel from the kernel repository.
 
