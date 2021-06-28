@@ -64,19 +64,19 @@ Or with [`appleboy/telegram-action`](https://github.com/appleboy/telegram-action
 - `gcc/9`
 - `gcc/10`
 
-#### Ubuntu's Clang (using `binutils`)
+#### Ubuntu's Clang
 
-- `clang/6.0`
-- `clang/7`
-- `clang/8`
-- `clang/9`
-- `clang/10`
-- `clang/11`
+- `clang/6.0`, `clang/6.0/binutils`
+- `clang/7`, `clang/7/binutils`
+- `clang/8`, `clang/8/binutils`
+- `clang/9`, `clang/9/binutils`
+- `clang/10`, `clang/10/binutils`
+- `clang/11`, `clang/11/binutils`
 
-#### [Proton Clang](https://github.com/kdrag0n/proton-clang) (using `binutils` from proton-clang repository)
+#### [Proton Clang](https://github.com/kdrag0n/proton-clang)
 
-- `proton-clang/master`
-- `proton-clang/<commit hash or tag>`
+- `proton-clang/master`, `proton-clang/master/binutils`
+- `proton-clang/<commit hash or tag>`, `proton-clang/<commit hash or tag>/binutils`
 
 ## Example usage
 
@@ -105,7 +105,7 @@ jobs:
       uses: lemniskett/android-kernel-actions@master
       id: build
       env:
-        NAME: Dark-Ages-Último-Tweaks
+        NAME: Dark-Ages-Último
       with:
         arch: arm64
         compiler: clang-10

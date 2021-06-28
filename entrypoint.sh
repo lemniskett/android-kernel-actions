@@ -38,55 +38,97 @@ if [[ $arch = "arm64" ]]; then
     arch_opts="ARCH=${arch} SUBARCH=${arch}"
     if [[ $compiler = gcc/* ]]; then
         ver="${compiler/gcc\/}"
-        if ! apt install -y --no-install-recommends gcc-"$ver" g++-"$ver" gcc-"$ver"-aarch64-linux-gnu gcc-"$ver"-arm-linux-gnueabi; then
+        make_opts=""
+        host_make_opts=""
+
+        if ! apt install -y --no-install-recommends gcc-"$ver" g++-"$ver" \
+            gcc-"$ver"-aarch64-linux-gnu gcc-"$ver"-arm-linux-gnueabi; then
             err "Compiler package not found, refer to the README for details"
             exit 1
         fi
+
         ln -sf /usr/bin/gcc-"$ver" /usr/bin/gcc
         ln -sf /usr/bin/g++-"$ver" /usr/bin/g++
         ln -sf /usr/bin/aarch64-linux-gnu-gcc-"$ver" /usr/bin/aarch64-linux-gnu-gcc
         ln -sf /usr/bin/arm-linux-gnueabi-gcc-"$ver" /usr/bin/arm-linux-gnueabi-gcc
+
         export ARCH="$arch"
         export SUBARCH="$arch"
         export CROSS_COMPILE="aarch64-linux-gnu-"
         export CROSS_COMPILE_ARM32="arm-linux-gnueabi-"
-        make_opts=""
-        host_make_opts=""
     elif [[ $compiler = clang/* ]]; then
         ver="${compiler/clang\/}"
-        if ! apt install -y --no-install-recommends clang-"$ver" llvm-"$ver" binutils binutils-aarch64-linux-gnu binutils-arm-linux-gnueabi; then
+        ver_number="${ver/\/binutils}"
+        binutils="$([[ $ver = */binutils ]] && echo true || echo false)"
+        
+        if $binutils; then
+            additional_packages="binutils binutils-aarch64-linux-gnu binutils-arm-linux-gnueabi"
+            make_opts="CC=clang"
+            host_make_opts="HOSTCC=clang HOSTCXX=clang++"
+        else
+            # Most android kernels still need binutils as the assembler, but it will
+            # not be used when the Makefile is patched to make use of LLVM_IAS option
+            additional_packages="binutils-aarch64-linux-gnu binutils-arm-linux-gnueabi"
+            make_opts="CC=clang LD=ld.lld NM=llvm-nm STRIP=llvm-strip OBJCOPY=llvm-objcopy"
+            make_opts+=" OBJDUMP=llvm-objdump READELF=llvm-readelf LLVM_IAS=1"
+            host_make_opts="HOSTCC=clang HOSTCXX=clang++ HOSTLD=ld.lld HOSTAR=llvm-ar"
+        fi
+
+        if ! apt install -y --no-install-recommends clang-"$ver_number" \
+            lld-"$ver_number" llvm-"$ver_number" $additional_packages; then
             err "Compiler package not found, refer to the README for details"
             exit 1
         fi
+
         ln -sf /usr/bin/clang-"$ver" /usr/bin/clang
         ln -sf /usr/bin/clang-"$ver" /usr/bin/clang++
+        ln -sf /usr/bin/ld.lld-"$ver" /usr/bin/ld.lld
+
+        for i in /usr/bin/llvm-*-"$ver_number"; do
+            ln -sf "$i" "${i/-$ver_number}"
+        done
+
         export ARCH="$arch"
         export SUBARCH="$arch"
         export CLANG_TRIPLE="aarch64-linux-gnu-"
         export CROSS_COMPILE="aarch64-linux-gnu-"
         export CROSS_COMPILE_ARM32="arm-linux-gnueabi-"
-        make_opts="CC=clang"
-        host_make_opts="HOSTCC=clang HOSTCXX=clang++"
     elif [[ $compiler = proton-clang/* ]]; then
         ver="${compiler/proton-clang\/}"
+        ver_number="${ver/\/binutils}"
         url="https://github.com/kdrag0n/proton-clang/archive/${ver}.tar.gz"
+        make_opts="CC=clang"
+        host_make_opts="HOSTCC=clang HOSTCXX=clang++"
+        binutils="$([[ $ver = */binutils ]] && echo true || echo false)"
+
+        # Due to different time in container and the host,
+        # disable certificate check
         if ! wget --no-check-certificate "$url" -O /tmp/proton-clang-"${ver}".tar.gz &>/dev/null; then
             err "Failed downloading toolchain, refer to the README for details"
             exit 1
         fi
+
+        if $binutils; then
+            make_opts="CC=clang"
+            host_make_opts="HOSTCC=clang HOSTCXX=clang++"
+        else
+            make_opts="CC=clang LD=ld.lld NM=llvm-nm STRIP=llvm-strip OBJCOPY=llvm-objcopy"
+            make_opts+=" OBJDUMP=llvm-objdump READELF=llvm-readelf LLVM_IAS=1"
+            host_make_opts="HOSTCC=clang HOSTCXX=clang++ HOSTLD=ld.lld HOSTAR=llvm-ar"
+        fi
+
         apt install -y --no-install-recommends libgcc-10-dev || exit 127
         tar xfv /tmp/proton-clang-"${ver}".tar.gz -C /
         cd /proton-clang-"${ver}"* || exit 127
         proton_path="$(pwd)"
-        export PATH="$proton_path/bin:${PATH}"
         cd "$workdir"/"$kernel_path" || exit 127
+
+        export PATH="$proton_path/bin:${PATH}"
         export ARCH="$arch"
         export SUBARCH="$arch"
         export CLANG_TRIPLE="aarch64-linux-gnu-"
         export CROSS_COMPILE="aarch64-linux-gnu-"
         export CROSS_COMPILE_ARM32="arm-linux-gnueabi-"
-        make_opts="CC=clang"
-        host_make_opts="HOSTCC=clang HOSTCXX=clang++"
     else
         err "Unsupported toolchain string. refer to the README for more detail"
         exit 100
