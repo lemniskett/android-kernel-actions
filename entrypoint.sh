@@ -96,14 +96,14 @@ if [[ $arch = "arm64" ]]; then
     elif [[ $compiler = proton-clang/* ]]; then
         ver="${compiler/proton-clang\/}"
         ver_number="${ver/\/binutils}"
-        url="https://github.com/kdrag0n/proton-clang/archive/${ver}.tar.gz"
+        url="https://github.com/kdrag0n/proton-clang/archive/${ver_number}.tar.gz"
         make_opts="CC=clang"
         host_make_opts="HOSTCC=clang HOSTCXX=clang++"
         binutils="$([[ $ver = */binutils ]] && echo true || echo false)"
 
         # Due to different time in container and the host,
         # disable certificate check
-        if ! wget --no-check-certificate "$url" -O /tmp/proton-clang-"${ver}".tar.gz &>/dev/null; then
+        if ! wget --no-check-certificate "$url" -O /tmp/proton-clang-"${ver_number}".tar.gz &>/dev/null; then
             err "Failed downloading toolchain, refer to the README for details"
             exit 1
         fi
