@@ -37,20 +37,20 @@ msg "Installing toolchain..."
 if [[ $arch = "arm64" ]]; then
     arch_opts="ARCH=${arch} SUBARCH=${arch}"
     if [[ $compiler = gcc/* ]]; then
-        ver="${compiler/gcc\/}"
+        ver_number="${compiler/gcc\/}"
         make_opts=""
         host_make_opts=""
 
-        if ! apt install -y --no-install-recommends gcc-"$ver" g++-"$ver" \
-            gcc-"$ver"-aarch64-linux-gnu gcc-"$ver"-arm-linux-gnueabi; then
+        if ! apt install -y --no-install-recommends gcc-"$ver_number" g++-"$ver_number" \
+            gcc-"$ver_number"-aarch64-linux-gnu gcc-"$ver_number"-arm-linux-gnueabi; then
             err "Compiler package not found, refer to the README for details"
             exit 1
         fi
 
-        ln -sf /usr/bin/gcc-"$ver" /usr/bin/gcc
-        ln -sf /usr/bin/g++-"$ver" /usr/bin/g++
-        ln -sf /usr/bin/aarch64-linux-gnu-gcc-"$ver" /usr/bin/aarch64-linux-gnu-gcc
-        ln -sf /usr/bin/arm-linux-gnueabi-gcc-"$ver" /usr/bin/arm-linux-gnueabi-gcc
+        ln -sf /usr/bin/gcc-"$ver_number" /usr/bin/gcc
+        ln -sf /usr/bin/g++-"$ver_number" /usr/bin/g++
+        ln -sf /usr/bin/aarch64-linux-gnu-gcc-"$ver_number" /usr/bin/aarch64-linux-gnu-gcc
+        ln -sf /usr/bin/arm-linux-gnueabi-gcc-"$ver_number" /usr/bin/arm-linux-gnueabi-gcc
 
         export ARCH="$arch"
         export SUBARCH="$arch"
@@ -97,8 +97,6 @@ if [[ $arch = "arm64" ]]; then
         ver="${compiler/proton-clang\/}"
         ver_number="${ver/\/binutils}"
         url="https://github.com/kdrag0n/proton-clang/archive/${ver_number}.tar.gz"
-        make_opts="CC=clang"
-        host_make_opts="HOSTCC=clang HOSTCXX=clang++"
         binutils="$([[ $ver = */binutils ]] && echo true || echo false)"
 
         # Due to different time in container and the host,
@@ -118,8 +116,8 @@ if [[ $arch = "arm64" ]]; then
         fi
 
         apt install -y --no-install-recommends libgcc-10-dev || exit 127
-        tar xfv /tmp/proton-clang-"${ver}".tar.gz -C /
-        cd /proton-clang-"${ver}"* || exit 127
+        tar xfv /tmp/proton-clang-"${ver_number}".tar.gz -C /
+        cd /proton-clang-"${ver_number}"* || exit 127
         proton_path="$(pwd)"
         cd "$workdir"/"$kernel_path" || exit 127
 
