@@ -109,7 +109,7 @@ jobs:
         NAME: Dark-Ages-Último
       with:
         arch: arm64
-        compiler: clang-10
+        compiler: gcc/10
         defconfig: vince_defconfig
         image: Image.gz-dtb
 
