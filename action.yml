@@ -1,4 +1,4 @@
-name: Android kernel build
+name: Android Kernel Action
 description: Build android kernel with GitHub Action
 author: Syahrial Agni Prasetya <lemniskett@protonmail.com>
 branding:
