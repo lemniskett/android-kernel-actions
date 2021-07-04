@@ -116,7 +116,7 @@ jobs:
         NAME: Dark-Ages-Último
       with:
         arch: arm64
-        compiler: aosp-clang/master/clang-r383902/binutils
+        compiler: gcc/10
         defconfig: vince_defconfig
         image: Image.gz-dtb
 
