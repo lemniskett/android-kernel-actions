@@ -87,9 +87,9 @@ if [[ $arch = "arm64" ]]; then
             exit 1
         fi
 
-        ln -sf /usr/bin/clang-"$ver" /usr/bin/clang
-        ln -sf /usr/bin/clang-"$ver" /usr/bin/clang++
-        ln -sf /usr/bin/ld.lld-"$ver" /usr/bin/ld.lld
+        ln -sf /usr/bin/clang-"$ver_number" /usr/bin/clang
+        ln -sf /usr/bin/clang-"$ver_number" /usr/bin/clang++
+        ln -sf /usr/bin/ld.lld-"$ver_number" /usr/bin/ld.lld
 
         for i in /usr/bin/llvm-*-"$ver_number"; do
             ln -sf "$i" "${i/-$ver_number}"
