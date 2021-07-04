@@ -56,6 +56,8 @@ Or with [`appleboy/telegram-action`](https://github.com/appleboy/telegram-action
 
 ## Available toolchains
 
+If you want to compile with Clang and LLVM without any of GNU's binutils, make sure your kernel source already supports LLVM options, otherwise compilation may fails. In that case, use clang toolchain with `/binutils`.
+
 ### ARM64
 
 #### Ubuntu's GCC
@@ -76,8 +78,13 @@ Or with [`appleboy/telegram-action`](https://github.com/appleboy/telegram-action
 
 #### [Proton Clang](https://github.com/kdrag0n/proton-clang)
 
-- `proton-clang/master`, `proton-clang/master/binutils`
-- `proton-clang/<commit hash or tag>`, `proton-clang/<commit hash or tag>/binutils`
+- `proton-clang/<branch, commit hash or tag>`, `proton-clang/<branch, commit hash or tag>/binutils`
+> Example : `proton-clang/master`, `proton-clang/09fb113/binutils`
+
+#### [AOSP's Clang](https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/)
+
+- `aosp-clang/<branch>/<clang version>`, `aosp-clang/<branch>/<clang version>/binutils`
+> Example : `aosp-clang/master/clang-r416183b`, `aosp-clang/android11-release/clang-r365631c/binutils`
 
 ## Example usage
 
@@ -109,7 +116,7 @@ jobs:
         NAME: Dark-Ages-Último
       with:
         arch: arm64
-        compiler: gcc/10
+        compiler: aosp-clang/master/clang-r383902/binutils
         defconfig: vince_defconfig
         image: Image.gz-dtb
 
