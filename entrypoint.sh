@@ -36,7 +36,7 @@ msg "Updating container..."
 apt update && apt upgrade -y
 msg "Installing essential packages..."
 apt install -y --no-install-recommends git make bc bison openssl \
-    curl zip kmod cpio flex libelf-dev libssl-dev libtfm-dev wget
+    curl zip kmod cpio flex libelf-dev libssl-dev libtfm-dev wget python
 set_output hash "$(cd "$kernel_path" && git rev-parse HEAD || exit 127)"
 msg "Installing toolchain..."
 if [[ $arch = "arm64" ]]; then
