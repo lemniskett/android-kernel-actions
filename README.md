@@ -129,11 +129,11 @@ jobs:
 
 ### With [`appleboy/telegram-action`](https://github.com/appleboy/telegram-action)
 ```yml
-name: Build on Tag
+name: Build on push master
 
 on:
   push:
-    branch: 'master'
+    branches: [ master ]
 
 jobs:
   build:
