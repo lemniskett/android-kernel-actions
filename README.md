@@ -88,7 +88,7 @@ If you want to compile with Clang and LLVM without any of GNU's binutils, make s
 
 ## Example usage
 
-### With [`ncipollo/release-action@v1`](https://github.com/ncipollo/release-action)
+### With [`ncipollo/release-action`](https://github.com/ncipollo/release-action)
 ```yml
 name: Build on Tag
 
@@ -125,6 +125,47 @@ jobs:
       with:
         artifacts: ${{ steps.build.outputs.outfile }}
         token: ${{ secrets.GITHUB_TOKEN }}
+```
+
+### With [`appleboy/telegram-action`](https://github.com/appleboy/telegram-action)
+```yml
+name: Build on Tag
+
+on:
+  push:
+    branch: 'master'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout kernel source
+      uses: actions/checkout@v2
+
+    - name: Checkout zipper
+      uses: actions/checkout@v2
+      with:
+        repository: lemniskett/AnyKernel3
+        path: zipper
+
+    - name: Android kernel build
+      uses: lemniskett/android-kernel-actions@master
+      id: build
+      env:
+        NAME: Dark-Ages-Último
+      with:
+        arch: arm64
+        compiler: gcc/10
+        defconfig: vince_defconfig
+        image: Image.gz-dtb
+
+    - name: Release build
+      uses: appleboy/telegram-action@master
+      with:
+        to: ${{ secrets.CHANNEL_ID }}
+        token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        message: Kernel is built!, took ${{ steps.build.outputs.elapsed_time }} seconds.
+        document: ${{ steps.build.outputs.outfile }}
 ```
 
 ## Troubleshooting
