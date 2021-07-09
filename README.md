@@ -30,6 +30,10 @@ Builds Android kernel from the kernel repository.
 | `outfile` | Path to the final build file |
 | `hash` | Kernel commit hash |
 
+## AnyKernel3
+
+Put the AnyKernel3 template to `zipper`. Providing AnyKernel3 template is optional, the `outfile` output varies based on this. If AnyKernel3 template is provided, this Action will create a flashable zip file based on the AnyKernel3 template and the `outfile` output will be the path to the zipfile. if not the `outfile` will be the path to the kernel image. See the [examples](#example-usage).
+
 ## Getting the build
 
 Use other action to actually get the file, for example, with [`ncipollo/release-action`](https://github.com/ncipollo/release-action):
