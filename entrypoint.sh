@@ -26,7 +26,6 @@ arch="$1"
 compiler="$2"
 defconfig="$3"
 image="$4"
-tag="${GITHUB_REF/refs\/*\//}"
 repo_name="${GITHUB_REPOSITORY/*\/}"
 zipper_path="${ZIPPER_PATH:-zipper}"
 kernel_path="${KERNEL_PATH:-.}"
@@ -195,9 +194,11 @@ else
     exit 100
 fi
 
+cd "$workdir"/"$kernel_path" || exit 127
 start_time="$(date +%s)"
 date="$(date +%d%m%Y-%I%M)"
-cd "$workdir"/"$kernel_path" || exit 127
+tag="$(git branch | sed 's/*\ //g')"
+echo "branch/tag: $tag"
 echo "make options:" $arch_opts $make_opts $host_make_opts
 msg "Generating defconfig from \`make $defconfig\`..."
 if ! make O=out $arch_opts $make_opts $host_make_opts "$defconfig"; then
