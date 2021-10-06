@@ -1,6 +1,6 @@
-name: Android Kernel Action
+name: Android Kernel Action_liblz4
 description: Build android kernel with GitHub Action
-author: Syahrial Agni Prasetya <lemniskett@protonmail.com>
+author: Shuxiangfan <linclonfan@outlook.com>
 branding:
   icon: box
   color: green
