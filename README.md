@@ -22,6 +22,7 @@ Builds Android kernel from the kernel repository.
 | `NAME` | Specify the name of the release file, defaults to the name of the repository |
 | `KERNEL_PATH` | Specify the path of the kernel source, defaults to `.` |
 | `ZIPPER_PATH` | Specify the path of the zip template, defaults to `zipper` |
+| `PYTHON_VERSION` | Specify the version of Python to use, either `3`, or `2`. defaults to `3` |
 
 ### Outputs
 
