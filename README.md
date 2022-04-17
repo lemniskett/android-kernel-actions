@@ -176,6 +176,10 @@ jobs:
 
 ## Troubleshooting
 
+### Script `InvalidSyntax` exceptions
+
+Your kernel source scripts might not support Python 3 yet, set `PYTHON_VERSION` environment variable to "2".
+
 ### Error codes
 
 - `1`: Packages fails to install
