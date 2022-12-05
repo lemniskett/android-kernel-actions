@@ -1,6 +1,6 @@
-name: Android Kernel Action
+name: Android Kernel Action with XZ by malik
 description: Build android kernel with GitHub Action
-author: Syahrial Agni Prasetya <lemniskett@protonmail.com>
+author: m
 branding:
   icon: box
   color: green
