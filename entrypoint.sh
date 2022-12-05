@@ -217,13 +217,13 @@ if ! make O=out $arch_opts $make_opts $host_make_opts -j"$(nproc --all)"; then
 fi
 set_output elapsed_time "$(echo "$(date +%s)"-"$start_time" | bc)"
 msg "Packaging the kernel..."
-zip_filename="customkernela32.zip"
+zip_filename=customkernela32.zip
 if [[ -e "$workdir"/"$zipper_path" ]]; then
     cp out/arch/"$arch"/boot/"$image" "$workdir"/"$zipper_path"/"$image"
     cd "$workdir"/"$zipper_path" || exit 127
     rm -rf .git
-    zip -r9 "customkernela32.zip" -x .gitignore README.md || exit 127
-    set_output outfile "$workdir"/"$zipper_path"/"customkernela32.zip"
+    zip -r9 "customkernela32.zip" . -x .gitignore README.md || exit 127
+    set_output outfile "$workdir"/"$zipper_path"/customkernela32.zip
     cd "$workdir" || exit 127
     exit 0
 else
