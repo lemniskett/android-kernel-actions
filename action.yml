@@ -1,6 +1,6 @@
-name: Android Kernel Action with XZ by malik
+name: Android Kernel Action with XZ
 description: Build android kernel with GitHub Action
-author: m
+author: lemniskett
 branding:
   icon: box
   color: green
