@@ -209,9 +209,11 @@ if ! make O=out $arch_opts $make_opts $host_make_opts "$defconfig"; then
 fi
 msg "Begin building kernel..."
 
-make O=out $arch_opts $make_opts $host_make_opts -j"$(nproc --all)" prepare
+make -C $(pwd) O=$(pwd)/out KCFLAGS=-w CONFIG_SECTION_MISMATCH_WARN_ONLY=y a32_eur_open_defconfig
+make -C $(pwd) O=$(pwd)/out KCFLAGS=-w CONFIG_SECTION_MISMATCH_WARN_ONLY=y -j16
 
-if ! make O=out $arch_opts $make_opts $host_make_opts -j"$(nproc --all)"; then
+if ! make -C $(pwd) O=$(pwd)/out KCFLAGS=-w CONFIG_SECTION_MISMATCH_WARN_ONLY=y a32_eur_open_defconfig
+make -C $(pwd) O=$(pwd)/out KCFLAGS=-w CONFIG_SECTION_MISMATCH_WARN_ONLY=y -j16"; then
     err "Failed building kernel, probably the toolchain is not compatible with the kernel, or kernel source problem"
     exit 3
 fi
