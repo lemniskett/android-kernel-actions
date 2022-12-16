@@ -1,7 +1,7 @@
 # Android Kernel Actions
 [![Shell check](https://github.com/lemniskett/android-kernel-actions/actions/workflows/check.yml/badge.svg)](https://github.com/lemniskett/android-kernel-actions/actions/workflows/check.yml)
 
-Part of the code from @alix1383
+A part of the code is from @alix1383
 
 Builds Android kernel from the kernel repository.
 > Note: You don't have to fork this repository, see the [examples](#example-usage).
