@@ -13,7 +13,7 @@ err(){
 }
 
 set_output(){
-    echo "::set-output name=$1::$2"
+    echo "$1=$2" >>$GITHUB_OUTPUT
 }
 
 extract_tarball(){
@@ -37,7 +37,7 @@ apt update && apt upgrade -y
 msg "Installing essential packages..."
 apt install -y --no-install-recommends git make bc bison openssl \
     curl zip kmod cpio flex libelf-dev libssl-dev libtfm-dev wget \
-    device-tree-compiler ca-certificates python3 python2 xz-utils
+    device-tree-compiler ca-certificates python3 python2
 ln -sf "/usr/bin/python${python_version}" /usr/bin/python
 set_output hash "$(cd "$kernel_path" && git rev-parse HEAD || exit 127)"
 msg "Installing toolchain..."
@@ -217,13 +217,13 @@ if ! make O=out $arch_opts $make_opts $host_make_opts -j"$(nproc --all)"; then
 fi
 set_output elapsed_time "$(echo "$(date +%s)"-"$start_time" | bc)"
 msg "Packaging the kernel..."
-zip_filename="Kernel_Package.zip"
+# zip_filename="${name}-${tag}-${date}.zip"
 if [[ -e "$workdir"/"$zipper_path" ]]; then
     cp out/arch/"$arch"/boot/"$image" "$workdir"/"$zipper_path"/"$image"
     cd "$workdir"/"$zipper_path" || exit 127
     rm -rf .git
-    zip -r9 "$zip_filename" . -x .gitignore README.md || exit 127
-    set_output outfile "$workdir"/"$zipper_path"/"$zip_filename"
+    zip -r9 "Kernel_Package.zip" . -x .gitignore README.md || exit 127
+    set_output outfile "$workdir"/"$zipper_path"/Kernel_Package.zip
     cd "$workdir" || exit 127
     exit 0
 else
