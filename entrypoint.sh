@@ -37,7 +37,7 @@ apt update && apt upgrade -y
 msg "Installing essential packages..."
 apt install -y --no-install-recommends git make bc bison openssl \
     curl zip kmod cpio flex libelf-dev libssl-dev libtfm-dev wget \
-    device-tree-compiler ca-certificates python3 python2
+    device-tree-compiler ca-certificates python3 python2 xz-utils
 ln -sf "/usr/bin/python${python_version}" /usr/bin/python
 set_output hash "$(cd "$kernel_path" && git rev-parse HEAD || exit 127)"
 msg "Installing toolchain..."
