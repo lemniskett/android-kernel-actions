@@ -13,7 +13,7 @@ err(){
 }
 
 set_output(){
-    echo "::set-output name=$1::$2"
+    echo "$1=$2" >> $GITHUB_OUTPUT
 }
 
 extract_tarball(){
